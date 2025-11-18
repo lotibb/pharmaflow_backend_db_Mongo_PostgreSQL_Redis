@@ -12,6 +12,7 @@ require("./models/sql/Medicamento");
 require("./models/sql/Lote");
 require("./models/sql/Venta");
 require("./models/sql/Usuario");
+require("./models/mongo/Reporte");
 
 // Routes
 const authRoutes = require("./routes/authRoutes");
@@ -19,6 +20,7 @@ const inventarioRoutes = require("./routes/inventarioRoutes");
 const medicamentoRoutes = require("./routes/medicamentoRoutes");
 const loteRoutes = require("./routes/loteRoutes");
 const ventaRoutes = require("./routes/ventaRoutes");
+const ensayoClinicoRoutes = require("./routes/ensayoClinicoRoutes");
 
 // Register auth routes first to ensure priority
 app.use("/api", authRoutes);
@@ -26,6 +28,7 @@ app.use("/api", inventarioRoutes);
 app.use("/api", medicamentoRoutes);
 app.use("/api", loteRoutes);
 app.use("/api", ventaRoutes);
+app.use("/api", ensayoClinicoRoutes);
 
 const PORT = process.env.PORT || 3000;
 
@@ -35,7 +38,7 @@ async function start() {
         await sequelize.authenticate();
         console.log("PostgreSQL connected");
 
-        await sequelize.sync({ alter: true });
+        // await sequelize.sync({ alter: true });
         console.log("Tables synchronisées");
 
         // Connect to Redis

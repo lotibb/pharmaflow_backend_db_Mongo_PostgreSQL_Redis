@@ -40,3 +40,27 @@ CREATE TABLE IF NOT EXISTS ventas (
 );
 
 CREATE INDEX IF NOT EXISTS idx_lotes_medicamento ON lotes(medicamentoId);
+
+-- List all indexes
+SELECT 
+    t.schemaname AS schema_name,
+    t.tablename AS table_name,
+    t.indexname AS index_name,
+    t.indexdef AS index_definition,
+    CASE 
+        WHEN i.indisunique THEN 'UNIQUE'
+        WHEN i.indisprimary THEN 'PRIMARY KEY'
+        ELSE 'INDEX'
+    END AS index_type,
+    CASE 
+        WHEN i.indisunique THEN 'Sí'
+        ELSE 'No'
+    END AS is_unique,
+    pg_size_pretty(pg_relation_size(quote_ident(t.schemaname)||'.'||quote_ident(t.indexname))) AS index_size
+FROM 
+    pg_indexes t
+    LEFT JOIN pg_index i ON i.indexrelid = (quote_ident(t.schemaname)||'.'||quote_ident(t.indexname))::regclass
+WHERE 
+    t.schemaname NOT IN ('pg_catalog', 'information_schema')
+ORDER BY 
+    t.schemaname, t.tablename, t.indexname;
